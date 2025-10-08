@@ -1,13 +1,12 @@
-# Sample workflow for building and deploying a Next.js site to GitHub Pages
-#
-# To get started with Next.js see: https://nextjs.org/docs/getting-started
-#
-name: Deploy Next.js site to Pages
+# This workflow is DISABLED because GitHub Pages doesn't support Server Actions
+# Use the Vercel workflow instead (.github/workflows/vercel.yml)
+
+name: Deploy Next.js site to Pages (DISABLED)
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
+  # Disabled - Server Actions not supported on GitHub Pages
+  # push:
+  #   branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -28,6 +27,14 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_FIREBASE_API_KEY: AIzaSyCSBS4Z-3q1ByVSCwObp6Dw483x13E0A4U
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: mbu-event-ga.firebaseapp.com
+      NEXT_PUBLIC_FIREBASE_DATABASE_URL: https://mbu-event-ga-default-rtdb.firebaseio.com
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: mbu-event-ga
+      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: mbu-event-ga.firebasestorage.app
+      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: 900766993851
+      NEXT_PUBLIC_FIREBASE_APP_ID: 1:900766993851:web:d4b548d51e7a702402489e
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -55,12 +62,6 @@ jobs:
           cache: ${{ steps.detect-package-manager.outputs.manager }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        with:
-          # Automatically inject basePath in your Next.js configuration file and disable
-          # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).
-          #
-          # You may remove this line if you want to manage the configuration yourself.
-          static_site_generator: next
       - name: Restore cache
         uses: actions/cache@v4
         with:
