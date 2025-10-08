@@ -24,11 +24,11 @@ export function SuccessDialog({ open, onOpenChange, userName }: SuccessDialogPro
 
   const openAllTabs = () => {
     const urls = [
-      'https://google.com',
-      'https://github.com',
-      'https://linkedin.com',
-      'https://facebook.com',
-      'https://twitter.com'
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=17',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=16',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=15',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=14',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=13'
     ];
 
     console.log('Opening tabs:', urls);
@@ -58,11 +58,12 @@ export function SuccessDialog({ open, onOpenChange, userName }: SuccessDialogPro
       setIsOpening(true);
       // Auto-open tabs after countdown with delay
       const urls = [
-        'https://google.com',
-        'https://github.com',
-        'https://linkedin.com',
-        'https://facebook.com',
-        'https://twitter.com'
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=17',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=16',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=15',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=14',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=13'
+
       ];
 
       console.log('Auto-opening tabs:', urls);
