@@ -1,10 +1,12 @@
 # Base Href Fix for GitHub Pages
 
 ## Problem
-The deployed app at `https://zaid-kamil.github.io/johnny_task/` was showing 404 errors:
+The deployed app was showing 404 errors for all resources:
 - ❌ `johnny_task/flutter_bootstrap.js` - 404
 - ❌ `johnny_task/favicon.png` - 404
 - ❌ `johnny_task/manifest.json` - 404
+
+**Root Cause:** The repository was renamed from `johnny_task` to `Gemini-AI-MindQuest`, but the workflow was still using the old name in the base-href.
 
 Browser console errors:
 ```
@@ -21,33 +23,34 @@ When the browser tried to load `flutter_bootstrap.js`, it looked at:
 - ✅ Should be: `https://zaid-kamil.github.io/johnny_task/flutter_bootstrap.js` (correct)
 
 ## Solution
-The `--base-href "/johnny_task/"` argument is passed to the `flutter build web` command in the GitHub Actions workflow, which correctly sets the base path:
+Updated the `--base-href` in the GitHub Actions workflow to match the actual repository name:
 
 ```yaml
 # .github/workflows/flutter-pages.yml
 - name: Build web
   working-directory: ./flutter_gemini_ai_mind_quest
-  run: flutter build web --release --base-href "/johnny_task/"
+  run: flutter build web --release --base-href "/Gemini-AI-MindQuest/"  # ✅ Updated!
 ```
 
 This updates the `<base href>` tag in `index.html` to:
 ```html
-<base href="/johnny_task/">
+<base href="/Gemini-AI-MindQuest/">
 ```
 
 Now all resource URLs are correctly resolved:
-- ✅ `https://zaid-kamil.github.io/johnny_task/flutter_bootstrap.js`
-- ✅ `https://zaid-kamil.github.io/johnny_task/favicon.png`
-- ✅ `https://zaid-kamil.github.io/johnny_task/manifest.json`
+- ✅ `https://zaid-kamil.github.io/Gemini-AI-MindQuest/flutter_bootstrap.js`
+- ✅ `https://zaid-kamil.github.io/Gemini-AI-MindQuest/favicon.png`
+- ✅ `https://zaid-kamil.github.io/Gemini-AI-MindQuest/manifest.json`
 
 ## Verification
 The GitHub Actions workflow was already configured correctly with `--base-href "/johnny_task/"`, so the next deployment will automatically fix this issue.
 
 ### Expected Timeline
-1. ✅ Push to GitHub (completed)
-2. ⏳ GitHub Actions builds the app with correct base-href (2-3 minutes)
-3. ⏳ Deployment to GitHub Pages (1 minute)
-4. ✅ App loads correctly at `https://zaid-kamil.github.io/johnny_task/`
+1. ✅ Updated base-href from `/johnny_task/` to `/Gemini-AI-MindQuest/`
+2. ✅ Pushed to GitHub
+3. ⏳ GitHub Actions builds the app with correct base-href (2-3 minutes)
+4. ⏳ Deployment to GitHub Pages (1 minute)
+5. ✅ App loads correctly at `https://zaid-kamil.github.io/Gemini-AI-MindQuest/`
 
 ### What Changed
 - No code changes needed - the workflow was already correct
@@ -56,16 +59,24 @@ The GitHub Actions workflow was already configured correctly with `--base-href "
 
 ## Next Steps
 1. **Wait 3-5 minutes** for the GitHub Actions workflow to complete
-2. **Visit** https://zaid-kamil.github.io/johnny_task/
+2. **Visit the NEW URL:** https://zaid-kamil.github.io/Gemini-AI-MindQuest/
 3. **Verify** that all resources load without 404 errors
 4. **Test** all functionality (form, Firebase, tab opening, theme toggle)
 
+## Important Note
+⚠️ The URL has changed due to the repository rename:
+- ❌ Old: `https://zaid-kamil.github.io/johnny_task/`
+- ✅ New: `https://zaid-kamil.github.io/Gemini-AI-MindQuest/`
+
+Make sure to bookmark and use the new URL!
+
 ## Troubleshooting
 If 404 errors persist after the new deployment:
-1. Clear browser cache (Ctrl+Shift+Delete)
-2. Try incognito/private browsing mode
-3. Check GitHub Actions logs: https://github.com/zaid-kamil/johnny_task/actions
-4. Verify the build step shows: `flutter build web --release --base-href "/johnny_task/"`
+1. **Make sure you're using the new URL:** `https://zaid-kamil.github.io/Gemini-AI-MindQuest/`
+2. Clear browser cache (Ctrl+Shift+Delete)
+3. Try incognito/private browsing mode
+4. Check GitHub Actions logs: https://github.com/zaid-kamil/Gemini-AI-MindQuest/actions (or johnny_task if redirect)
+5. Verify the build step shows: `flutter build web --release --base-href "/Gemini-AI-MindQuest/"`
 
 ## Notes
 - The CORS errors from `extensions-stores-admin.onrender.com` are unrelated to this issue
