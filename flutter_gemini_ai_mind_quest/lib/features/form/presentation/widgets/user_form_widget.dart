@@ -34,6 +34,9 @@ class _UserFormWidgetState extends State<UserFormWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final isMediumScreen = MediaQuery.of(context).size.width < 900;
+    
     return BlocListener<FormBloc, FormBlocState>(
       listener: (context, state) {
         if (state.status == FormStatus.success) {
@@ -55,12 +58,12 @@ class _UserFormWidgetState extends State<UserFormWidget> {
       },
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(32.0),
+          padding: EdgeInsets.all(isSmallScreen ? 16.0 : (isMediumScreen ? 24.0 : 32.0)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildFormFields(context),
-              const SizedBox(height: 32),
+              _buildFormFields(context, isSmallScreen),
+              SizedBox(height: isSmallScreen ? 16 : 32),
               _buildSubmitButton(context),
             ],
           ),
@@ -78,7 +81,27 @@ class _UserFormWidgetState extends State<UserFormWidget> {
     _mobileController.clear();
   }
 
-  Widget _buildFormFields(BuildContext context) {
+  Widget _buildFormFields(BuildContext context, bool isSmallScreen) {
+    if (isSmallScreen) {
+      // Single column layout for mobile
+      return Column(
+        children: [
+          _buildNameField(),
+          const SizedBox(height: 16),
+          _buildRollField(),
+          const SizedBox(height: 16),
+          _buildBranchField(),
+          const SizedBox(height: 16),
+          _buildCollegeField(),
+          const SizedBox(height: 16),
+          _buildEmailField(),
+          const SizedBox(height: 16),
+          _buildMobileField(),
+        ],
+      );
+    }
+    
+    // Two column layout for tablet and desktop
     return Column(
       children: [
         Row(
@@ -287,6 +310,34 @@ class _SuccessDialog extends StatefulWidget {
 
 class _SuccessDialogState extends State<_SuccessDialog> {
   int _countdown = 3;
+  
+  final List<Map<String, String>> _links = [
+    {
+      'title': 'Prompt 1',
+      'url': 'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=17',
+      'icon': '🎯'
+    },
+    {
+      'title': 'Prompt 2',
+      'url': 'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=16',
+      'icon': '🚀'
+    },
+    {
+      'title': 'Prompt 3',
+      'url': 'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=15',
+      'icon': '⭐'
+    },
+    {
+      'title': 'Prompt 4',
+      'url': 'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=14',
+      'icon': '💡'
+    },
+    {
+      'title': 'Prompt 5',
+      'url': 'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=13',
+      'icon': '✨'
+    },
+  ];
 
   @override
   void initState() {
@@ -307,135 +358,186 @@ class _SuccessDialogState extends State<_SuccessDialog> {
   }
 
   void _openTabs() async {
-    final urls = [
-      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=17',
-      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=16',
-      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=15',
-      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=14',
-      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=13'
-    ];
-
+    final urls = _links.map((link) => link['url']!).toList();
     await UrlLauncherService.openMultipleUrls(urls, delayMs: 500);
+  }
+  
+  void _openSingleTab(String url) async {
+    await UrlLauncherService.openInNewTab(url);
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 600;
+    final maxWidth = isSmallScreen ? screenWidth * 0.9 : 600.0;
+    
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      contentPadding: EdgeInsets.all(isSmallScreen ? 16 : 24),
       content: Container(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 64,
-            ),
-            const SizedBox(height: 16),
-            ShaderMask(
-              shaderCallback: (bounds) => const LinearGradient(
-                colors: [Color(0xFFA78BFA), Color(0xFF60A5FA)],
-              ).createShader(bounds),
-              child: const Text(
-                '🎉 Success!',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: isSmallScreen ? 48 : 64,
+              ),
+              const SizedBox(height: 16),
+              ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [Color(0xFFA78BFA), Color(0xFF60A5FA)],
+                ).createShader(bounds),
+                child: Text(
+                  '🎉 Success!',
+                  style: TextStyle(
+                    fontSize: isSmallScreen ? 24 : 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Thank you, ${widget.userName}!',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Your information has been saved to the database.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 24),
-            if (_countdown > 0)
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.open_in_new, color: Color(0xFFA78BFA)),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Opening tabs in $_countdown...',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+              const SizedBox(height: 16),
+              Text(
+                'Thank you, ${widget.userName}!',
+                style: TextStyle(
+                  fontSize: isSmallScreen ? 18 : 20,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Your information has been saved to the database.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
+              ),
+              const SizedBox(height: 24),
+              if (_countdown > 0)
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.open_in_new, color: Color(0xFFA78BFA)),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            'Opening tabs in $_countdown...',
+                            style: TextStyle(
+                              fontSize: isSmallScreen ? 16 : 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      5,
-                      (index) => Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: _countdown <= 3 - index
-                              ? const Color(0xFFA78BFA)
-                              : Colors.grey.withValues(alpha: 0.3),
-                          shape: BoxShape.circle,
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        5,
+                        (index) => Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: isSmallScreen ? 10 : 12,
+                          height: isSmallScreen ? 10 : 12,
+                          decoration: BoxDecoration(
+                            color: _countdown <= 3 - index
+                                ? const Color(0xFFA78BFA)
+                                : Colors.grey.withValues(alpha: 0.3),
+                            shape: BoxShape.circle,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              )
-            else
-              Column(
-                children: [
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.check_circle, color: Colors.green),
-                      SizedBox(width: 8),
-                      Text(
-                        'Tabs Opened Successfully!',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
+                  ],
+                )
+              else
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.check_circle, color: Colors.green, size: 20),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            'Tabs Opened Successfully!',
+                            style: TextStyle(
+                              fontSize: isSmallScreen ? 16 : 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Opening: Google, GitHub, LinkedIn, Facebook, Twitter',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
+                      ],
                     ),
-                    textAlign: TextAlign.center,
+                    const SizedBox(height: 16),
+                    Text(
+                      'Click any button below to reopen a link:',
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 13 : 14,
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    // 5 Buttons for individual links
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      alignment: WrapAlignment.center,
+                      children: _links.map((link) {
+                        return SizedBox(
+                          width: isSmallScreen ? double.infinity : ((maxWidth - 32) / 2),
+                          child: OutlinedButton.icon(
+                            onPressed: () => _openSingleTab(link['url']!),
+                            icon: Text(link['icon']!, style: const TextStyle(fontSize: 20)),
+                            label: Text(
+                              link['title']!,
+                              style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: isSmallScreen ? 12 : 16,
+                                horizontal: isSmallScreen ? 12 : 16,
+                              ),
+                              side: const BorderSide(color: Color(0xFFA78BFA), width: 2),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    context.read<FormBloc>().add(const FormReset());
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 14 : 16),
                   ),
-                ],
+                  child: Text(
+                    _countdown == 0 ? 'Done' : 'Close',
+                    style: TextStyle(fontSize: isSmallScreen ? 16 : 18),
+                  ),
+                ),
               ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  context.read<FormBloc>().add(const FormReset());
-                },
-                child: Text(_countdown == 0 ? 'Done' : 'Close'),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

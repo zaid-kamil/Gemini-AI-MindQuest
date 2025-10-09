@@ -13,21 +13,28 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 600;
+    final isMediumScreen = screenWidth < 900;
+    
     return Scaffold(
       body: Stack(
         children: [
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
+              padding: EdgeInsets.all(isSmallScreen ? 16.0 : 24.0),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 900),
+                constraints: BoxConstraints(
+                  maxWidth: isSmallScreen ? screenWidth : (isMediumScreen ? 700 : 900),
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildTitle(),
+                    SizedBox(height: isSmallScreen ? 60 : 0),
+                    _buildTitle(isSmallScreen),
                     const SizedBox(height: 8),
-                    _buildSubtitle(),
-                    const SizedBox(height: 32),
+                    _buildSubtitle(isSmallScreen),
+                    SizedBox(height: isSmallScreen ? 24 : 32),
                     BlocProvider(
                       create: (context) => FormBloc(
                         repository: FirebaseRepository(
@@ -36,31 +43,32 @@ class HomePage extends StatelessWidget {
                       ),
                       child: const UserFormWidget(),
                     ),
+                    SizedBox(height: isSmallScreen ? 24 : 0),
                   ],
                 ),
               ),
             ),
           ),
           Positioned(
-            top: 24,
-            right: 24,
-            child: _buildThemeSwitcher(context),
+            top: isSmallScreen ? 16 : 24,
+            right: isSmallScreen ? 16 : 24,
+            child: _buildThemeSwitcher(context, isSmallScreen),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(bool isSmallScreen) {
     return ShaderMask(
       shaderCallback: (bounds) => const LinearGradient(
         colors: [Color(0xFFA78BFA), Color(0xFF60A5FA), Color(0xFF9333EA)],
       ).createShader(bounds),
-      child: const Text(
+      child: Text(
         'Gemini AI MindQuest',
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 56,
+          fontSize: isSmallScreen ? 32 : 56,
           fontWeight: FontWeight.bold,
           color: Colors.white,
           height: 1.2,
@@ -69,18 +77,18 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSubtitle() {
+  Widget _buildSubtitle(bool isSmallScreen) {
     return Text(
       'Fill in your details below. After submission, several tabs will open automatically.',
       textAlign: TextAlign.center,
       style: TextStyle(
-        fontSize: 18,
+        fontSize: isSmallScreen ? 14 : 18,
         color: Colors.grey[400],
       ),
     );
   }
 
-  Widget _buildThemeSwitcher(BuildContext context) {
+  Widget _buildThemeSwitcher(BuildContext context, bool isSmallScreen) {
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
         final isDark = state.themeMode == ThemeMode.dark;
@@ -101,7 +109,7 @@ class HomePage extends StatelessWidget {
               isDark ? Icons.light_mode : Icons.dark_mode,
               color: isDark ? Colors.yellow : const Color(0xFF9333EA),
             ),
-            iconSize: 28,
+            iconSize: isSmallScreen ? 24 : 28,
             onPressed: () {
               context.read<ThemeBloc>().add(const ThemeToggled());
             },
