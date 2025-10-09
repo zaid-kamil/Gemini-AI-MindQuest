@@ -1,6 +1,10 @@
 # Gemini AI MindQuest - Flutter Web
 
+[![Deploy to GitHub Pages](https://github.com/zaid-kamil/johnny_task/actions/workflows/flutter-pages.yml/badge.svg)](https://github.com/zaid-kamil/johnny_task/actions/workflows/flutter-pages.yml)
+
 A Flutter web application that replicates the functionality of the React/Next.js version with the same beautiful purple-blue gradient theme and BLoC state management pattern.
+
+**🌐 Live Demo**: [https://zaid-kamil.github.io/johnny_task/](https://zaid-kamil.github.io/johnny_task/)
 
 ## Features
 
@@ -154,11 +158,25 @@ The built files will be in `build/web/` directory.
 
 ### Deployment
 
-The web build can be deployed to any static hosting service:
+#### GitHub Pages (Automatic - Recommended)
+
+The app automatically deploys to GitHub Pages on every push to `main` branch via GitHub Actions.
+
+**Live URL**: [https://zaid-kamil.github.io/johnny_task/](https://zaid-kamil.github.io/johnny_task/)
+
+**Setup**:
+1. Enable GitHub Pages in repository settings
+2. Set source to "GitHub Actions"
+3. Push to main branch - deployment happens automatically!
+
+See [GITHUB_PAGES_DEPLOYMENT.md](GITHUB_PAGES_DEPLOYMENT.md) for detailed setup instructions.
+
+#### Other Hosting Options
+
+The web build can also be deployed to:
 - **Firebase Hosting**: `firebase deploy`
 - **Vercel**: Deploy the `build/web` folder
 - **Netlify**: Deploy the `build/web` folder
-- **GitHub Pages**: Push `build/web` contents to gh-pages branch
 
 ## Color Scheme
 

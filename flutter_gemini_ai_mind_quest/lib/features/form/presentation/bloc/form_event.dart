@@ -64,3 +64,7 @@ class MobileChanged extends FormEvent {
 class FormSubmitted extends FormEvent {
   const FormSubmitted();
 }
+
+class FormReset extends FormEvent {
+  const FormReset();
+}

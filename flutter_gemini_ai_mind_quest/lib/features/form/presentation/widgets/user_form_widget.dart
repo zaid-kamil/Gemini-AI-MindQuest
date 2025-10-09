@@ -5,8 +5,32 @@ import '../bloc/form_bloc.dart';
 import '../bloc/form_event.dart';
 import '../bloc/form_state.dart';
 
-class UserFormWidget extends StatelessWidget {
+class UserFormWidget extends StatefulWidget {
   const UserFormWidget({super.key});
+
+  @override
+  State<UserFormWidget> createState() => _UserFormWidgetState();
+}
+
+class _UserFormWidgetState extends State<UserFormWidget> {
+  // Text editing controllers
+  final _nameController = TextEditingController();
+  final _rollController = TextEditingController();
+  final _branchController = TextEditingController();
+  final _collegeController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _mobileController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _rollController.dispose();
+    _branchController.dispose();
+    _collegeController.dispose();
+    _emailController.dispose();
+    _mobileController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +45,12 @@ class UserFormWidget extends StatelessWidget {
               backgroundColor: Colors.red,
             ),
           );
+        }
+        // Clear controllers when form is reset
+        if (state.status == FormStatus.initial && 
+            state.name.isPure && 
+            state.roll.isPure) {
+          _clearControllers();
         }
       },
       child: Card(
@@ -37,6 +67,15 @@ class UserFormWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _clearControllers() {
+    _nameController.clear();
+    _rollController.clear();
+    _branchController.clear();
+    _collegeController.clear();
+    _emailController.clear();
+    _mobileController.clear();
   }
 
   Widget _buildFormFields(BuildContext context) {
@@ -74,6 +113,7 @@ class UserFormWidget extends StatelessWidget {
       buildWhen: (previous, current) => previous.name != current.name,
       builder: (context, state) {
         return TextField(
+          controller: _nameController,
           onChanged: (value) =>
               context.read<FormBloc>().add(NameChanged(value)),
           decoration: InputDecoration(
@@ -94,6 +134,7 @@ class UserFormWidget extends StatelessWidget {
       buildWhen: (previous, current) => previous.roll != current.roll,
       builder: (context, state) {
         return TextField(
+          controller: _rollController,
           onChanged: (value) =>
               context.read<FormBloc>().add(RollChanged(value)),
           decoration: InputDecoration(
@@ -114,6 +155,7 @@ class UserFormWidget extends StatelessWidget {
       buildWhen: (previous, current) => previous.branch != current.branch,
       builder: (context, state) {
         return TextField(
+          controller: _branchController,
           onChanged: (value) =>
               context.read<FormBloc>().add(BranchChanged(value)),
           decoration: InputDecoration(
@@ -134,6 +176,7 @@ class UserFormWidget extends StatelessWidget {
       buildWhen: (previous, current) => previous.college != current.college,
       builder: (context, state) {
         return TextField(
+          controller: _collegeController,
           onChanged: (value) =>
               context.read<FormBloc>().add(CollegeChanged(value)),
           decoration: InputDecoration(
@@ -154,6 +197,7 @@ class UserFormWidget extends StatelessWidget {
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
         return TextField(
+          controller: _emailController,
           onChanged: (value) =>
               context.read<FormBloc>().add(EmailChanged(value)),
           keyboardType: TextInputType.emailAddress,
@@ -175,6 +219,7 @@ class UserFormWidget extends StatelessWidget {
       buildWhen: (previous, current) => previous.mobile != current.mobile,
       builder: (context, state) {
         return TextField(
+          controller: _mobileController,
           onChanged: (value) =>
               context.read<FormBloc>().add(MobileChanged(value)),
           keyboardType: TextInputType.phone,
@@ -214,7 +259,7 @@ class UserFormWidget extends StatelessWidget {
                   ),
                 )
               : const Text(
-                  'Submit and Open Tabs',
+                  'Submit Details',
                   style: TextStyle(fontSize: 18),
                 ),
         );
@@ -263,11 +308,11 @@ class _SuccessDialogState extends State<_SuccessDialog> {
 
   void _openTabs() async {
     final urls = [
-      'https://google.com',
-      'https://github.com',
-      'https://linkedin.com',
-      'https://facebook.com',
-      'https://twitter.com',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=17',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=16',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=15',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=14',
+      'https://aiskillshouse.com/student/qr-mediator.html?uid=613&promptId=13'
     ];
 
     await UrlLauncherService.openMultipleUrls(urls, delayMs: 500);
@@ -383,7 +428,10 @@ class _SuccessDialogState extends State<_SuccessDialog> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.read<FormBloc>().add(const FormReset());
+                },
                 child: Text(_countdown == 0 ? 'Done' : 'Close'),
               ),
             ),

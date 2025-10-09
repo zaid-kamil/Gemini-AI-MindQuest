@@ -19,6 +19,7 @@ class FormBloc extends Bloc<FormEvent, FormBlocState> {
     on<EmailChanged>(_onEmailChanged);
     on<MobileChanged>(_onMobileChanged);
     on<FormSubmitted>(_onFormSubmitted);
+    on<FormReset>(_onFormReset);
   }
 
   void _onNameChanged(NameChanged event, Emitter<FormBlocState> emit) {
@@ -154,5 +155,9 @@ class FormBloc extends Bloc<FormEvent, FormBlocState> {
         ),
       );
     }
+  }
+
+  void _onFormReset(FormReset event, Emitter<FormBlocState> emit) {
+    emit(const FormBlocState()); // Reset to initial state
   }
 }
