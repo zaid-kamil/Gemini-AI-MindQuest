@@ -37,7 +37,7 @@ jobs:
 
       - name: Build web
         working-directory: ./flutter_gemini_ai_mind_quest
-        run: flutter build web --release --base-href "/johnny_task/"
+        run: flutter build web --release --base-href "/Gemini-AI-MindQuest/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
